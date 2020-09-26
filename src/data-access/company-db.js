@@ -15,19 +15,50 @@ export default function companiesDb({ makeDb }) {
         }))
 
     }
-    async function filter({ country }) {
-        if (!country) {
-            console.log("no country")
-        }
+    async function filter({ country, jobTitle, IndustryType, EmployeeSizeFromValue, EmployeeSizeToValue }) {
+
         console.log("query db", country)
 
 
 
-        const filterContact = () => {
+        const filterCompany = () => {
+            let temp = []
 
+
+
+
+            if (IndustryType) {
+                console.log("no country")
+                temp.push({ $eq: ["$IndustryType1", IndustryType] },)
+            }
+            if (EmployeeSizeFromValue) {
+                console.log(jobTitle)
+                temp.push({ $gte: ["$EmployeeSizeFromValue", parseInt(EmployeeSizeFromValue)] },)
+            }
+            if (EmployeeSizeToValue) {
+                console.log(jobTitle)
+                temp.push({ $lte: ["$EmployeeSizeToValue", parseInt(EmployeeSizeToValue)] },)
+            }
+            return temp
 
 
         }
+        const filterContact = () => {
+            let temp = []
+            if (country) {
+                console.log("no country")
+                temp.push({ $eq: ["$Contact Country", country] },)
+            }
+            if (jobTitle) {
+                console.log(jobTitle)
+                temp.push({ $eq: ["$JobTitle1", "Marketing"] },)
+            }
+            return temp
+
+
+        }
+
+        console.log("filter temp ", filterCompany())
 
 
 
@@ -39,15 +70,16 @@ export default function companiesDb({ makeDb }) {
                     $expr:
 
                     {
-                        $and: [
+                        $and: filterContact()
+                        // [
 
-                            { $eq: ["$Contact Country", "United States"] },
-                            // { $eq: ["$JobTitle1", "Marketing"] },
-                            // { $eq: ["$IndustryType1", "Medical"] },
-                            // { $gte: ["$EmployeeSizeFromValue", 1000] },
-                            // { $lte: ["$EmployeeSizeToValue", 5000] },
+                        //     { $eq: ["$Contact Country", "United States"] },
+                        //     { $eq: ["$JobTitle1", "Marketing"] },
+                        //     { $eq: ["$IndustryType1", "Medical"] },
+                        //     { $gte: ["$EmployeeSizeFromValue", 1000] },
+                        //     { $lte: ["$EmployeeSizeToValue", 5000] },
 
-                        ]
+                        // ]
                     }
                 }
             },
@@ -75,9 +107,10 @@ export default function companiesDb({ makeDb }) {
                                     $and: [
 
                                         { $eq: ["$CompanyId", "$$companyId_comp"] },
-                                        { $eq: ["$IndustryType1", "Medical"] },
-                                        { $gte: ["$EmployeeSizeFromValue", 1000] },
-                                        { $lte: ["$EmployeeSizeToValue", 5000] },
+                                        ...filterCompany()
+                                        // { $eq: ["$IndustryType1", "Medical"] },
+                                        // { $gte: ["$EmployeeSizeFromValue", 1000] },
+                                        // { $lte: ["$EmployeeSizeToValue", 5000] },
 
                                     ]
                                 }
