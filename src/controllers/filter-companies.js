@@ -7,7 +7,10 @@ export default function makeFilterCompanies({ listFilterCompanies }) {
             // const postComments = await listComments({
             //     postId: httpRequest.query.postId
             // })
-            const postFilterCompanies = await listFilterCompanies()
+            // console.log("http request", httpRequest.query)
+            const postFilterCompanies = await listFilterCompanies({
+                query: httpRequest.query
+            })
             return {
                 headers,
                 statusCode: 200,

@@ -15,20 +15,58 @@ export default function companiesDb({ makeDb }) {
         }))
 
     }
-    async function filter() {
+    async function filter({ country }) {
+        if (!country) {
+            console.log("no country")
+        }
+        console.log("query db", country)
+
+
+
+        const filterContact = () => {
+
+
+
+        }
+
+
+
         const db = await makeDb()
 
         const pipelineContact = [
+            {
+                $match: {
+                    $expr:
+
+                    {
+                        $and: [
+
+                            { $eq: ["$Contact Country", "United States"] },
+                            // { $eq: ["$JobTitle1", "Marketing"] },
+                            // { $eq: ["$IndustryType1", "Medical"] },
+                            // { $gte: ["$EmployeeSizeFromValue", 1000] },
+                            // { $lte: ["$EmployeeSizeToValue", 5000] },
+
+                        ]
+                    }
+                }
+            },
+
             {
                 $lookup: {
                     from: "company",
                     let: { companyId_comp: "$CompanyId" },
                     pipeline: [
-                        // { $group: { _id: "$CompanyId" } },
-
+                        // {
+                        //     $group: {
+                        //         _id: "$CompanyId",
+                        //         CompanyId: { $first: "$CompanyId" }
+                        //     }
+                        // },
                         {
                             $limit: 10
                         },
+
                         {
                             $match: {
                                 $expr:
@@ -36,18 +74,28 @@ export default function companiesDb({ makeDb }) {
                                 {
                                     $and: [
 
-                                        { $eq: ["$CompanyId", "$$companyId_comp"] }
+                                        { $eq: ["$CompanyId", "$$companyId_comp"] },
+                                        { $eq: ["$IndustryType1", "Medical"] },
+                                        { $gte: ["$EmployeeSizeFromValue", 1000] },
+                                        { $lte: ["$EmployeeSizeToValue", 5000] },
+
                                     ]
                                 }
                             }
                         },
-                        {
-                            $project: { CompanyId: 0 }
-                        }
+
+                        // {
+                        //     $project: { CompanyId: 0 }
+                        // }
                     ],
                     as: "company"
                 }
             },
+            {
+                $match: {
+                    "company": { $ne: [] }
+                }
+            }
             // {
             //     $replaceRoot: { newRoot: { $mergeObjects: [{ $arrayElemAt: ["$fromItems", 0] }, "$$ROOT"] } }
             // },

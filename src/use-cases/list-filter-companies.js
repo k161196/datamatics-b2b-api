@@ -1,6 +1,7 @@
 export default function makeFilterCompanies({ companiesDb }) {
-    return async function listFilterCompanies() {
-        const companies = await companiesDb.filter()
+    return async function listFilterCompanies({ query }) {
+
+        const companies = await companiesDb.filter(query)
         return companies
     }
 }
