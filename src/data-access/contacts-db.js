@@ -1,4 +1,20 @@
 export default function makeContactsDb({ makeDb, xlsxFile }) {
+
+    let excelData = []
+
+    xlsxFile("./src/data/test.xlsx").then((row) => {
+        // console.log("row", row)
+        row.forEach((col) => {
+            col.forEach((data) => {
+                excelData.push(data)
+                // console.log(data)
+                // return data
+            })
+        })
+        // console.log("excel data", excelData)
+    })
+
+
     return Object.freeze({
         findAll,
         findByPage
@@ -25,20 +41,10 @@ export default function makeContactsDb({ makeDb, xlsxFile }) {
     }
 
 
-    async function findByPage(httpRequest) {
-        let excelData = []
 
-        xlsxFile("./src/data/test.xlsx").then((row) => {
-            console.log("row", row)
-            row.forEach((col) => {
-                col.forEach((data) => {
-                    excelData.push(data)
-                    console.log(data)
-                    // return data
-                })
-            })
-            console.log("excel data", excelData)
-        })
+
+    async function findByPage(httpRequest) {
+
         // const excelData = xlsxFile("./src/data/test.xlsx").then((row) => { return row })
         // excelData.forEach((col) => {
 
@@ -58,7 +64,7 @@ export default function makeContactsDb({ makeDb, xlsxFile }) {
         if (httpQuery.JobTitle && httpQuery.JobTitle !== "") {
             obj["JobTitle1"] = httpQuery.JobTitle
         }
-        if (excelData) {
+        if (excelData && excelData[0]) {
             console.log("0", excelData[0])
             obj[`${excelData[0]}`] = { $nin: [excelData[1], excelData[2]] }
         }
@@ -85,9 +91,14 @@ export default function makeContactsDb({ makeDb, xlsxFile }) {
         // (await result.toArray()).map(({ _id: id, ...found }) => {
         //     console.log("id", id)
         // })
-        return (await result.toArray()).map(({ _id: id, ...found }) => ({
-            id,
-            ...found
-        }))
+        return {
+
+            status: "pass",
+            excelData: excelData,
+            data: (await result.toArray()).map(({ _id: id, ...found }) => ({
+                id,
+                ...found
+            }))
+        }
     }
 }
