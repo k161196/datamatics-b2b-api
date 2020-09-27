@@ -1,7 +1,9 @@
 import express from "express"
 import dotenv from "dotenv"
 import bodyParser from "body-parser"
+import cors from "cors"
 import mongoDb from "mongodb"
+
 // import { getUser, addUserController } from "./controllers"
 import makeCallback from "./express-callback"
 
@@ -18,24 +20,34 @@ const app = express()
 
 
 
-
+app.use(cors())
 app.use(bodyParser.json())
 
 
 app.get("/", (req, res) => {
     res.send("welcome datamatics")
 })
-app.get("/contacts", makeCallback(getContacts))
+// app.get("/contacts", makeCallback(getContacts))
+app.get("/contacts/:page", makeCallback(getContacts))
 app.get("/companys", makeCallback(getCompanies))
 app.get("/companies/filter", makeCallback(filterCompanies))
 // app.use("/user", makeCallback(getUser))
 // app.use(`${apiRoot}/signup`, makeCallback(getUser))
 
-app.listen(3000, () => {
-    console.log("app running on port 300")
+app.listen(5000, () => {
+    console.log("app running on port 5000")
 })
 
+
+
+
+
+
 export default app
+
+
+
+
 
 
 

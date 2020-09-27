@@ -9,7 +9,7 @@ export default function makeGetContacts({ listContacts }) {
             // const postComments = await listComments({
             //     postId: httpRequest.query.postId
             // })
-            const postContacts = await listContacts()
+            const postContacts = await listContacts({ httpRequest })
             return {
                 headers,
                 statusCode: 200,

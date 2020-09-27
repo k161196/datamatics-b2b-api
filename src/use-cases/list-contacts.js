@@ -1,17 +1,21 @@
 export default function makeListContacts({ contactsDb }) {
-    return async function listContacts() {
+    return async function listContacts({ httpRequest }) {
 
         // return [{
         //     name: "kiran"
         // }, {
         //     name: "yadav"
         // }]
-        const contacts = await contactsDb.findAll()
-        return contacts
+        // console.log("http", httpRequest)
+        // console.log("params", params.page)
+        // // const contacts = await contactsDb.findAll()
+        // // return contacts
 
-        //   if (!postId) {
-        //     throw new Error('You must supply a post id.')
-        //   }
+        if (!httpRequest.params.page) {
+            throw new Error('You must supply a page id.')
+        }
+        const contacts = await contactsDb.findByPage(httpRequest)
+        return contacts
         // const comments = await commentsDb.findByPostId({
         //     postId,
         //     omitReplies: false

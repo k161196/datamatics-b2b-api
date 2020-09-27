@@ -1,4 +1,4 @@
 # datamatics-b2b-api
 
 # req.query
-{ country, jobTitle, IndustryType, EmployeeSizeFromValue, EmployeeSizeToValue }
+{ Country, JobTitle, IndustryType, EmployeeSizeFromValue, EmployeeSizeToValue }

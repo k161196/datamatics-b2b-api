@@ -15,9 +15,18 @@ export default function companiesDb({ makeDb }) {
         }))
 
     }
-    async function filter({ country, jobTitle, IndustryType, EmployeeSizeFromValue, EmployeeSizeToValue }) {
+    async function filter({ JobTitle, Country, IndustryType, EmployeeSizeFromValue, EmployeeSizeToValue }) {
 
-        console.log("query db", country)
+        // console.log("query db", Country)
+
+
+
+        // let temp2 = []
+
+        // if (JobTitle) {
+        //     console.log("jobTitle", JobTitle)
+        //     temp2.push({ $eq: ["$JobTitle1", JobTitle] },)
+        // }
 
 
 
@@ -28,15 +37,15 @@ export default function companiesDb({ makeDb }) {
 
 
             if (IndustryType) {
-                console.log("no country")
+                // console.log("no country")
                 temp.push({ $eq: ["$IndustryType1", IndustryType] },)
             }
             if (EmployeeSizeFromValue) {
-                console.log(jobTitle)
+                // console.log(jobTitle)
                 temp.push({ $gte: ["$EmployeeSizeFromValue", parseInt(EmployeeSizeFromValue)] },)
             }
             if (EmployeeSizeToValue) {
-                console.log(jobTitle)
+                // console.log(jobTitle)
                 temp.push({ $lte: ["$EmployeeSizeToValue", parseInt(EmployeeSizeToValue)] },)
             }
             return temp
@@ -44,46 +53,58 @@ export default function companiesDb({ makeDb }) {
 
         }
         const filterContact = () => {
-            let temp = []
-            if (country) {
-                console.log("no country")
-                temp.push({ $eq: ["$Contact Country", country] },)
+            let temp2 = []
+            if (Country) {
+                // console.log("country", country)
+                temp2.push({ $eq: ["$Contact Country", Country] },)
+                // temp2.push("hah")
             }
-            if (jobTitle) {
-                console.log(jobTitle)
-                temp.push({ $eq: ["$JobTitle1", "Marketing"] },)
+
+            if (JobTitle) {
+                console.log("jobTitle", JobTitle)
+                temp2.push({ $eq: ["$JobTitle1", JobTitle] },)
             }
-            return temp
+            return temp2
 
 
         }
 
-        console.log("filter temp ", filterCompany())
+        console.log("filterContact ", filterContact())
+        console.log("filterCompany ", filterCompany())
 
 
 
         const db = await makeDb()
 
         const pipelineContact = [
+
+
+            // {
+            //     $match: {
+            //         $expr:
+
+            //         {
+            //             $and:
+            //                 filterContact()
+            //             // [
+
+            //             //     { $eq: ["$Contact Country", "Canada"] },
+            //             //     // { $eq: ["$Contact Country", "United+States"] },
+            //             //     { $eq: ["$JobTitle1", "Manager"] },
+            //             //     // { $eq: ["$IndustryType1", "Medical"] },
+            //             //     // { $gte: ["$EmployeeSizeFromValue", 1000] },
+            //             //     // { $lte: ["$EmployeeSizeToValue", 5000] },
+
+            //             // ]
+            //         }
+            //     }
+            // },
+
+
+
             {
-                $match: {
-                    $expr:
-
-                    {
-                        $and: filterContact()
-                        // [
-
-                        //     { $eq: ["$Contact Country", "United States"] },
-                        //     { $eq: ["$JobTitle1", "Marketing"] },
-                        //     { $eq: ["$IndustryType1", "Medical"] },
-                        //     { $gte: ["$EmployeeSizeFromValue", 1000] },
-                        //     { $lte: ["$EmployeeSizeToValue", 5000] },
-
-                        // ]
-                    }
-                }
+                $project: { JobFunction1: 0, JobLevel1: 0 }
             },
-
             {
                 $lookup: {
                     from: "company",
@@ -92,7 +113,12 @@ export default function companiesDb({ makeDb }) {
                         // {
                         //     $group: {
                         //         _id: "$CompanyId",
-                        //         CompanyId: { $first: "$CompanyId" }
+                        //         Company: { $first: "$Company" },
+                        //         IndustryType1: { $first: "$IndustryType1" },
+                        //         IndustryType1: { $first: "$IndustryType1" },
+                        //         EmployeeSizeFromValue: { $first: "$EmployeeSizeFromValue" },
+                        //         EmployeeSizeToValue: { $first: "$EmployeeSizeToValue" },
+
                         //     }
                         // },
                         {
@@ -101,6 +127,8 @@ export default function companiesDb({ makeDb }) {
 
                         {
                             $match: {
+
+
                                 $expr:
 
                                 {
@@ -108,8 +136,9 @@ export default function companiesDb({ makeDb }) {
 
                                         { $eq: ["$CompanyId", "$$companyId_comp"] },
                                         ...filterCompany()
+                                        // ...filterContact()
                                         // { $eq: ["$IndustryType1", "Medical"] },
-                                        // { $gte: ["$EmployeeSizeFromValue", 1000] },
+                                        // { $gte: ["$EmployeeSizeFromValue", 2000] },
                                         // { $lte: ["$EmployeeSizeToValue", 5000] },
 
                                     ]
@@ -117,9 +146,10 @@ export default function companiesDb({ makeDb }) {
                             }
                         },
 
-                        // {
-                        //     $project: { CompanyId: 0 }
-                        // }
+
+                        {
+                            $project: { _id: 0, Speciality: 0, SubIndustryType1: 0, }
+                        }
                     ],
                     as: "company"
                 }
@@ -128,15 +158,33 @@ export default function companiesDb({ makeDb }) {
                 $match: {
                     "company": { $ne: [] }
                 }
-            }
-            // {
-            //     $replaceRoot: { newRoot: { $mergeObjects: [{ $arrayElemAt: ["$fromItems", 0] }, "$$ROOT"] } }
-            // },
-            // { $project: { fromItems: 0 } }
+            },
+            {
+                $replaceRoot: { newRoot: { $mergeObjects: [{ $arrayElemAt: ["$company", 0] }, "$$ROOT"] } }
+            },
+            { $project: { company: 0 } }
 
         ]
+        // console.log("count", await db.collection('contact').aggregate(pipelineContact).limit(10).explain("executionStats"))
+        // conat countData = await db.collection('contact').aggregate(pipelineContact).limit(10);
 
-        const result = await db.collection('contact').aggregate(pipelineContact).limit(10)
+
+
+        // const data = await db.collection('contact').aggregate([...pipelineContact, {
+        //     $count: "passing_scores"
+        // },], { allowDiskUse: true }).limit(10)
+
+        // console.log("count", await data.toArray())
+        const result = await db.collection('contact').aggregate(pipelineContact, { allowDiskUse: true }).limit(10)
+
+        // console.log("result", result)
+        // return {
+        //     count: await data.toArray(),
+        //     data: (await result.toArray()).map(({ _id: id, ...found }) => ({
+        //         id,
+        //         ...found
+        //     }))
+        // }
         return (await result.toArray()).map(({ _id: id, ...found }) => ({
             id,
             ...found
@@ -144,27 +192,27 @@ export default function companiesDb({ makeDb }) {
 
 
 
-        const pipelineCompany = [
-            {
-                '$match': {
-                    'CompanyId': 146796
-                }
-            },
-            {
-                '$limit': 5
-            },
-            {
-                '$lookup': {
-                    'from': 'contact',
-                    'localField': 'CompanyId',
-                    'foreignField': 'CompanyId',
-                    'as': 'string'
-                }
-            }
+        // const pipelineCompany = [
+        //     {
+        //         '$match': {
+        //             'CompanyId': 146796
+        //         }
+        //     },
+        //     {
+        //         '$limit': 5
+        //     },
+        //     {
+        //         '$lookup': {
+        //             'from': 'contact',
+        //             'localField': 'CompanyId',
+        //             'foreignField': 'CompanyId',
+        //             'as': 'string'
+        //         }
+        //     }
 
 
 
-        ]
+        // ]
         // const pipelineContact = [
         //     {
         //         '$match': {

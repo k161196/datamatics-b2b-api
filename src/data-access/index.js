@@ -1,6 +1,7 @@
 import makeContactsDb from './contacts-db'
 import makeCompanyDb from "./company-db"
 import mongodb from 'mongodb'
+import xlsxFile from "read-excel-file/node"
 
 const MongoClient = mongodb.MongoClient
 // const url = process.env.DM_COMMENTS_DB_URL
@@ -16,6 +17,6 @@ export async function makeDb() {
     return client.db(dbName)
 }
 
-const contactsDb = makeContactsDb({ makeDb })
+const contactsDb = makeContactsDb({ makeDb, xlsxFile })
 const companiesDb = makeCompanyDb({ makeDb })
 export { companiesDb, contactsDb }
