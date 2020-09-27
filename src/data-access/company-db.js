@@ -185,10 +185,13 @@ export default function companiesDb({ makeDb }) {
         //         ...found
         //     }))
         // }
-        return (await result.toArray()).map(({ _id: id, ...found }) => ({
-            id,
-            ...found
-        }))
+        return {
+            status: "pass",
+            data: (await result.toArray()).map(({ _id: id, ...found }) => ({
+                id,
+                ...found
+            }))
+        }
 
 
 
