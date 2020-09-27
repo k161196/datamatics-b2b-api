@@ -93,10 +93,10 @@ app.post('/upload', (req, res) => {
 
 
 
+const PORT = process.env.PORT || 8080
 
-
-app.listen(5000, () => {
-    console.log("app running on port 5000")
+app.listen(PORT, () => {
+    console.log(`app running on port ${PORT}`)
 })
 
 
