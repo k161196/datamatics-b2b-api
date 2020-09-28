@@ -39,7 +39,7 @@ var upload = multer({ storage: storage }).array('file')
 
 
 app.get("/", (req, res) => {
-    res.send("welcome datamatics")
+    res.send("welcome datamatics v1.0")
 })
 // app.get("/contacts", makeCallback(getContacts))
 app.get("/contacts/:page", makeCallback(getContacts))
