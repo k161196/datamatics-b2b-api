@@ -58,7 +58,7 @@ export default function makeContactsDb({ makeDb, xlsxFile }) {
         const db = await makeDb()
         // console.log("db ", httpQuery)
         let obj = {}
-        if (httpQuery.JobTitle && httpQuery.Country !== "") {
+        if (httpQuery.Country && httpQuery.Country !== "") {
             obj["Contact Country"] = httpQuery.Country
         }
         if (httpQuery.JobTitle && httpQuery.JobTitle !== "") {

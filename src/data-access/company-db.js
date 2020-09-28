@@ -55,13 +55,13 @@ export default function companiesDb({ makeDb }) {
         const filterContact = () => {
             let temp2 = []
             if (Country) {
-                // console.log("country", country)
+                // console.log("country", Country)
                 temp2.push({ $eq: ["$Contact Country", Country] },)
                 // temp2.push("hah")
             }
 
             if (JobTitle) {
-                console.log("jobTitle", JobTitle)
+                // console.log("jobTitle", JobTitle)
                 temp2.push({ $eq: ["$JobTitle1", JobTitle] },)
             }
             return temp2
